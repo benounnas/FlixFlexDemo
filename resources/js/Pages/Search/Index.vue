@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, router } from '@inertiajs/vue3'
+import { Head, router, Link } from '@inertiajs/vue3'
 import DefaultLayout from '@/Layouts/DefaultLayout.vue'
 import debounce from 'lodash/debounce'
 import { ref, watch } from 'vue'

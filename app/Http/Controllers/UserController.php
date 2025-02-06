@@ -49,14 +49,14 @@ class UserController extends Controller
 
     public function search(Request $request)
     {
-        $query = $request->validate(['q' => 'required|string|min:2']);
+        //$query = $request->validate(['q' => 'required|string|min:2']);
         $tmdb = new TMDBService();
-        $results = $tmdb->search($query['q'], $request->get('page', 1));
+        $results = $tmdb->search($request->get('q'), $request->get('page', 1));
 
         return Inertia::render('Search/Index', [
             'results' => $results['data'],
             'meta' => $results['meta'],
-            'query' => $query['q']
+            'query' => $request->get('q'),
         ]);
     }
 }
