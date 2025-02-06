@@ -5,7 +5,7 @@ import DefaultLayout from '@/Layouts/DefaultLayout.vue'
 import { MediaType } from '@/types/enums'
 import { useForm } from '@inertiajs/vue3'
 import { Toaster, toast } from 'vue-sonner'
-import {Movie} from "@/types/movies";
+import { Movie } from "@/types/movies"
 
 interface Props {
   movie: Movie & {
@@ -17,11 +17,16 @@ const props = defineProps<Props>()
 const error = ref<string>('')
 const isSubmitting = ref(false)
 const isFavorite = ref(props.movie.is_favorite)
+const showTrailer = ref(false)
 
 const form = useForm({
   media_id: props.movie.id,
   media_type: MediaType.MOVIE
 })
+
+const getTrailerKey = () => {
+  return props.movie.videos?.results.find(v => v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser'))?.key
+}
 
 const toggleFavorite = async () => {
   if (isSubmitting.value) return
@@ -66,6 +71,16 @@ const toggleFavorite = async () => {
         <div class="absolute bottom-0 p-8">
           <div class="flex items-center gap-4">
             <h1 class="text-4xl font-bold text-white mb-2">{{ movie.title }}</h1>
+            <button
+                v-if="getTrailerKey()"
+                @click="showTrailer = true"
+                class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+              </svg>
+              Watch Trailer
+            </button>
             <button
                 @click="toggleFavorite"
                 :disabled="isSubmitting"
@@ -123,6 +138,25 @@ const toggleFavorite = async () => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="showTrailer" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75">
+      <div class="relative w-full max-w-4xl">
+        <button @click="showTrailer = false" class="absolute -top-10 right-0 text-white hover:text-gray-300">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <div class="relative pt-[56.25%]">
+          <iframe
+              :src="'https://www.youtube.com/embed/' + getTrailerKey()"
+              class="absolute inset-0 w-full h-full"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+          ></iframe>
         </div>
       </div>
     </div>

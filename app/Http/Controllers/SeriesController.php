@@ -69,8 +69,13 @@ class SeriesController extends Controller
                 'status' => $data['status'] ?? 'Unknown',
                 'genres' => $data['genres'] ?? [],
                 'created_by' => $data['created_by'] ?? [],
+                'networks' => $data['networks'] ?? [],
                 'seasons' => $data['seasons'] ?? [],
-                'videos' => $data['videos'] ?? null,
+                'videos' => [
+                    'results' => $data['videos']['results'] ?? []
+                ],
+                'last_episode_to_air' => $data['last_episode_to_air'] ?? null,
+                'next_episode_to_air' => $data['next_episode_to_air'] ?? null,
                 'is_favorite' => $is_favorite
             ]
         ]);
